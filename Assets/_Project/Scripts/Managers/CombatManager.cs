@@ -22,6 +22,9 @@ public class CombatManager : MonoBehaviour
 
     [Header("UI Elements")]
     public TextMeshProUGUI turnInfoText;
+    public TextMeshProUGUI playerHealthText;
+    public TextMeshProUGUI enemyHealthText;
+    public TextMeshProUGUI playerSapText;
 
     [Header("Character Stats")]
     public CharacterStats playerStats;
@@ -41,9 +44,11 @@ public class CombatManager : MonoBehaviour
         GameObject playerGO = Instantiate(playerPrefab, playerSpawnPoint);
         playerStats = playerGO.GetComponent<CharacterStats>();
         playerStats.InitializeFromManager();
+        playerHealthText.text = $"Health: {playerStats.currentHealth}/{playerStats.maxHealth}";
 
         GameObject enemyGO = Instantiate(enemyPrefab, enemySpawnPoint);
         enemyStats = enemyGO.GetComponent<CharacterStats>();
+        enemyHealthText.text = $"Health: {enemyStats.currentHealth}/{enemyStats.maxHealth}";
 
         turnInfoText.text = "Battle Start!";
         yield return new WaitForSeconds(2f);
@@ -73,6 +78,7 @@ public class CombatManager : MonoBehaviour
         {
             turnInfoText.text = "Enemy attacks!";
             bool isPlayerDead = playerStats.TakeDamage(enemyStats.damage);
+            playerHealthText.text = $"Health: {playerStats.currentHealth}/{playerStats.maxHealth}";
             yield return new WaitForSeconds(1f);
             if (isPlayerDead)
             {
@@ -116,7 +122,9 @@ public class CombatManager : MonoBehaviour
     {
         turnInfoText.text = "You attack!";
         bool isEnemyDead = enemyStats.TakeDamage(playerStats.damage);
+        enemyHealthText.text = $"Health: {enemyStats.currentHealth}/{enemyStats.maxHealth}";
         playerStats.ModifySap(1);
+        playerSapText.text = $"Sap: {playerStats.currentSap}/{playerStats.maxSap}";
 
         yield return new WaitForSeconds(1f);
         if (isEnemyDead)
@@ -160,8 +168,10 @@ public class CombatManager : MonoBehaviour
         }
 
         playerStats.ModifySap(-skillCost);
+        playerSapText.text = $"Sap: {playerStats.currentSap}/{playerStats.maxSap}";
         turnInfoText.text = "You use Root Bind!";
         bool isEnemyDead = enemyStats.TakeDamage(Mathf.RoundToInt(playerStats.damage * 1.5f));
+        enemyHealthText.text = $"Health: {enemyStats.currentHealth}/{enemyStats.maxHealth}";
         enemyStats.isStunned = true;
 
         if (isEnemyDead)
