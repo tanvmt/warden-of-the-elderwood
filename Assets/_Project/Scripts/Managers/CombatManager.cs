@@ -16,7 +16,7 @@ public class CombatManager : MonoBehaviour
 {
     [Header("Prefabs & Spawn Points")]
     public GameObject playerPrefab;
-    public GameObject enemyPrefab;
+    // public GameObject enemyPrefab;
     public Transform playerSpawnPoint;
     public Transform enemySpawnPoint;
 
@@ -46,8 +46,19 @@ public class CombatManager : MonoBehaviour
         playerStats.InitializeFromManager();
         playerHealthText.text = $"Health: {playerStats.currentHealth}/{playerStats.maxHealth}";
 
-        GameObject enemyGO = Instantiate(enemyPrefab, enemySpawnPoint);
-        enemyStats = enemyGO.GetComponent<CharacterStats>();
+        GameObject enemyPrefabFromManager = GameManager.Instance.enemyToBattle;
+
+        if (enemyPrefabFromManager != null)
+        {
+            GameObject enemyGO = Instantiate(enemyPrefabFromManager, enemySpawnPoint);
+            enemyStats = enemyGO.GetComponent<CharacterStats>();
+        }
+        else
+        {
+            Debug.LogError("No enemy prefab set in GameManager!");
+            yield break;
+        }
+
         enemyHealthText.text = $"Health: {enemyStats.currentHealth}/{enemyStats.maxHealth}";
 
         turnInfoText.text = "Battle Start!";

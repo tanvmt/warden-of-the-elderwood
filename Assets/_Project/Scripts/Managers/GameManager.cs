@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public int playerCurrentHealth;
     public int playerMaxHealth = 100;
 
+    public GameObject enemyToBattle;
+
     void Awake()
     {
         if (Instance == null)
